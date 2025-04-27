@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>S3 File Manager</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body class="container mt-4">
+  <h1 class="mb-4">S3 File Manager</h1>
+  <!-- Flash Messages -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+  
+  <!-- Create Bucket -->
+  <form action="{{ url_for('create_bucket') }}" method="post" class="mb-3">
+    <label for="new_bucket">Create New Bucket:</label>
+    <div class="input-group">
+      <input type="text" name="bucket_name" id="new_bucket" class="form-control" placeholder="Enter bucket name" required>
+      <button type="submit" class="btn btn-success">Create</button>
+    </div>
+  </form>
+  
+  <!-- Delete Bucket -->
+  <form action="{{ url_for('delete_bucket') }}" method="post" class="mb-3">
+    <label for="delete_bucket">Delete Bucket:</label>
+    <div class="input-group">
+      <select name="bucket_name" id="delete_bucket" class="form-select" required>
+        {% for bucket in buckets %}
+          <option value="{{ bucket }}">{{ bucket }}</option>
+        {% endfor %}
+      </select>
+      <button type="submit" class="btn btn-danger">Delete</button>
+    </div>
+  </form>
+
+  <!-- Bucket Selection -->
+  <form method="get" class="mb-3">
+    <label for="bucket">Select Bucket:</label>
+    <select name="bucket" id="bucket" class="form-select" onchange="this.form.submit()">
+      {% for bucket in buckets %}
+        <option value="{{ bucket }}" {% if bucket == selected_bucket %}selected{% endif %}>{{ bucket }}</option>
+      {% endfor %}
+    </select>
+  </form>
+
+  <!-- File Upload -->
+  <form action="{{ url_for('upload_file') }}" method="post" enctype="multipart/form-data" class="mb-4">
+    <div class="mb-3">
+      <input type="file" name="file" class="form-control" required>
+      <input type="hidden" name="bucket" value="{{ selected_bucket }}">
+    </div>
+    <button type="submit" class="btn btn-primary">Upload File</button>
+  </form>
+
+  <!-- File List -->
+  <h2>Files in {{ selected_bucket }}</h2>
+  {% if files %}
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Filename</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for file in files %}
+          <tr>
+            <td>{{ file.Key }}</td>
+            <td>
+              <a href="{{ url_for('delete_file', bucket_name=selected_bucket, filename=file.Key) }}" class="btn btn-danger btn-sm">Delete</a>
+              <a href="{{ url_for('copy_file', bucket_name=selected_bucket, filename=file.Key) }}" class="btn btn-info btn-sm">Copy</a>
+
+              <!-- Move File -->
+              <form action="#" method="post" class="d-inline" onsubmit="updateMoveAction(this)">
+                <input type="hidden" name="bucket_name" value="{{ selected_bucket }}">
+                <input type="hidden" name="filename" value="{{ file.Key }}">
+                <input type="text" name="new_folder" placeholder="Enter folder name" class="form-control d-inline w-auto" required>
+                <button type="submit" class="btn btn-warning btn-sm">Move</button>
+              </form>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>No files found in this bucket.</p>
+  {% endif %}
+
+  <script>
+    function updateMoveAction(form) {
+      let bucket = form.bucket_name.value;
+      let filename = encodeURIComponent(form.filename.value);
+      let newFolder = encodeURIComponent(form.new_folder.value);
+      form.action = `/move/${bucket}/${filename}/${newFolder}`;
+    }
+  </script>
+</body>
+</html>
