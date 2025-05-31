@@ -30,5 +30,5 @@ stages:
     - task: CopyFiles@2
       inputs:
         SourceFolder: '$(agent.builddirectory)'
-        Contents: '**dockerfile'
+        Contents: 'dockerfile'
         TargetFolder: '$(build.artifactstagingdirectory)'
