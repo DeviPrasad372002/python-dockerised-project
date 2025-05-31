@@ -10,7 +10,7 @@ resources:
 
 variables:
   # Container registry service connection established during pipeline creation
-  dockerRegistryServiceConnection: '7affc696-41a2-47fd-8750-94be54ad7846'
+  dockerRegistryServiceConnection: 'my-EKS'
   imageRepository: 'deviprasadpythondockerisedproject'
   containerRegistry: 'deviprasad3722.azurecr.io'
   dockerfilePath: '$(Build.SourcesDirectory)/dockerfile'
