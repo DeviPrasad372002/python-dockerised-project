@@ -27,3 +27,8 @@ stages:
         dockerfile: '$(Build.SourcesDirectory)/dockerfile'
         tags: |
           $(tag)
+    - task: CopyFiles@2
+      inputs:
+        SourceFolder: '$(agent.builddirectory)'
+        Contents: '**dockerfile'
+        TargetFolder: '$(build.artifactstagingdirectory)'
