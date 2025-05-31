@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-pydocker-app-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-pydocker-app
+  template:
+    metadata:
+      labels:
+        app: my-pydocker-app
+    spec:
+      containers:
+        - name: my-pydocker-app
+          image: deviprasad3722/my-pydocker-app:latest
+          ports:
+            - containerPort: 5002
+          envFrom:
+            - secretRef:
+                name: aws-secrets
