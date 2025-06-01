@@ -34,7 +34,7 @@ stages:
     - task: CopyFiles@2
       displayName: Copy Kubernetes YAMLs
       inputs:
-        SourceFolder: '$(Build.SourcesDirectory)/manifests'
+        SourceFolder: '$(System.DefaultWorkingDirectory)/_deviprasadpythondockerisedproject/manifests'
         Contents: '**/*.yaml'
         TargetFolder: '$(Build.ArtifactStagingDirectory)'
 
