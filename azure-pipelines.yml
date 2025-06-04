@@ -17,7 +17,7 @@ variables:
   containerRegistry: 'prasad3722.azurecr.io'
 
   # Dockerfile location
-  dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
+  dockerfilePath: '$(Build.SourcesDirectory)/dockerfile'
 
   # Use build ID and latest as tags
   tag: '$(Build.BuildId)'
